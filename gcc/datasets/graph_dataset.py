@@ -466,7 +466,7 @@ class LoadBalanceGraphDataset(torch.utils.data.IterableDataset):
         if step == 0:
             other_node_idx = node_idx
         else:
-            other_node_idx = dgl.contrib.sampling.random_walk(
+            other_node_idx = dgl.sampling.random_walk(
                 g=self.graphs[graph_idx], seeds=[node_idx], num_traces=1, num_hops=step
             )[0][0][-1].item()
 
@@ -475,7 +475,7 @@ class LoadBalanceGraphDataset(torch.utils.data.IterableDataset):
                 self.rw_hops,
                 int(
                     (
-                            (self.graphs[graph_idx].in_degree(node_idx) ** 0.75)
+                            (self.graphs[graph_idx].in_degrees(node_idx) ** 0.75)
                             * math.e
                             / (math.e - 1)
                             / self.restart_prob
@@ -483,16 +483,16 @@ class LoadBalanceGraphDataset(torch.utils.data.IterableDataset):
                     + 0.5
                 ),
             )
-            traces = dgl.contrib.sampling.random_walk_with_restart(
+            traces = dgl.sampling.random_walk_with_restart(
                 self.graphs[graph_idx],
-                seeds=[node_idx, other_node_idx],
+                nodes =[node_idx, other_node_idx],
                 restart_prob=self.restart_prob,
-                max_nodes_per_seed=max_nodes_per_seed,
+                length =max_nodes_per_seed,
             )
         elif self.aug == "ns":
             prob = dgl.backend.tensor([], dgl.backend.float32)
             prob = dgl.backend.zerocopy_to_dgl_ndarray(prob)
-            nf1 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf1 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -506,7 +506,7 @@ class LoadBalanceGraphDataset(torch.utils.data.IterableDataset):
             )[0]
             nf1 = NodeFlow(self.graphs[graph_idx], nf1)
             trace1 = [nf1.layer_parent_nid(i) for i in range(nf1.num_layers)]
-            nf2 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf2 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([other_node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -636,7 +636,7 @@ class LoadBalanceGraphDataset_al(torch.utils.data.IterableDataset):
         if step == 0:
             other_node_idx = node_idx
         else:
-            other_node_idx = dgl.contrib.sampling.random_walk(
+            other_node_idx = dgl.sampling.random_walk(
                 g=self.graphs[graph_idx], seeds=[node_idx], num_traces=1, num_hops=step
             )[0][0][-1].item()
 
@@ -645,7 +645,7 @@ class LoadBalanceGraphDataset_al(torch.utils.data.IterableDataset):
                 self.rw_hops,
                 int(
                     (
-                            (self.graphs[graph_idx].in_degree(node_idx) ** 0.75)
+                            (self.graphs[graph_idx].in_degrees(node_idx) ** 0.75)
                             * math.e
                             / (math.e - 1)
                             / self.restart_prob
@@ -653,7 +653,7 @@ class LoadBalanceGraphDataset_al(torch.utils.data.IterableDataset):
                     + 0.5
                 ),
             )
-            traces = dgl.contrib.sampling.random_walk_with_restart(
+            traces = dgl.sampling.random_walk(
                 self.graphs[graph_idx],
                 seeds=[node_idx, other_node_idx],
                 restart_prob=self.restart_prob,
@@ -662,7 +662,7 @@ class LoadBalanceGraphDataset_al(torch.utils.data.IterableDataset):
         elif self.aug == "ns":
             prob = dgl.backend.tensor([], dgl.backend.float32)
             prob = dgl.backend.zerocopy_to_dgl_ndarray(prob)
-            nf1 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf1 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -676,7 +676,7 @@ class LoadBalanceGraphDataset_al(torch.utils.data.IterableDataset):
             )[0]
             nf1 = NodeFlow(self.graphs[graph_idx], nf1)
             trace1 = [nf1.layer_parent_nid(i) for i in range(nf1.num_layers)]
-            nf2 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf2 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([other_node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -839,7 +839,7 @@ class LoadBalanceGraphDataset_al_each(torch.utils.data.IterableDataset):
         if step == 0:
             other_node_idx = node_idx
         else:
-            other_node_idx = dgl.contrib.sampling.random_walk(
+            other_node_idx = dgl.sampling.random_walk(
                 g=self.graphs[graph_idx], seeds=[node_idx], num_traces=1, num_hops=step
             )[0][0][-1].item()
 
@@ -848,7 +848,7 @@ class LoadBalanceGraphDataset_al_each(torch.utils.data.IterableDataset):
                 self.rw_hops,
                 int(
                     (
-                            (self.graphs[graph_idx].in_degree(node_idx) ** 0.75)
+                            (self.graphs[graph_idx].in_degrees(node_idx) ** 0.75)
                             * math.e
                             / (math.e - 1)
                             / self.restart_prob
@@ -856,7 +856,7 @@ class LoadBalanceGraphDataset_al_each(torch.utils.data.IterableDataset):
                     + 0.5
                 ),
             )
-            traces = dgl.contrib.sampling.random_walk_with_restart(
+            traces = dgl.sampling.random_walk_with_restart(
                 self.graphs[graph_idx],
                 seeds=[node_idx, other_node_idx],
                 restart_prob=self.restart_prob,
@@ -865,7 +865,7 @@ class LoadBalanceGraphDataset_al_each(torch.utils.data.IterableDataset):
         elif self.aug == "ns":
             prob = dgl.backend.tensor([], dgl.backend.float32)
             prob = dgl.backend.zerocopy_to_dgl_ndarray(prob)
-            nf1 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf1 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -880,7 +880,7 @@ class LoadBalanceGraphDataset_al_each(torch.utils.data.IterableDataset):
             )[0]
             nf1 = NodeFlow(self.graphs[graph_idx], nf1)
             trace1 = [nf1.layer_parent_nid(i) for i in range(nf1.num_layers)]
-            nf2 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf2 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([other_node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -1026,7 +1026,7 @@ class LoadBalanceGraphDataset_al_each_sum(torch.utils.data.IterableDataset):
         if step == 0:
             other_node_idx = node_idx
         else:
-            other_node_idx = dgl.contrib.sampling.random_walk(
+            other_node_idx = dgl.sampling.random_walk(
                 g=self.graphs[graph_idx], seeds=[node_idx], num_traces=1, num_hops=step
             )[0][0][-1].item()
 
@@ -1035,7 +1035,7 @@ class LoadBalanceGraphDataset_al_each_sum(torch.utils.data.IterableDataset):
                 self.rw_hops,
                 int(
                     (
-                            (self.graphs[graph_idx].in_degree(node_idx) ** 0.75)
+                            (self.graphs[graph_idx].in_degrees(node_idx) ** 0.75)
                             * math.e
                             / (math.e - 1)
                             / self.restart_prob
@@ -1043,7 +1043,7 @@ class LoadBalanceGraphDataset_al_each_sum(torch.utils.data.IterableDataset):
                     + 0.5
                 ),
             )
-            traces = dgl.contrib.sampling.random_walk_with_restart(
+            traces = dgl.sampling.random_walk_with_restart(
                 self.graphs[graph_idx],
                 seeds=[node_idx, other_node_idx],
                 restart_prob=self.restart_prob,
@@ -1052,7 +1052,7 @@ class LoadBalanceGraphDataset_al_each_sum(torch.utils.data.IterableDataset):
         elif self.aug == "ns":
             prob = dgl.backend.tensor([], dgl.backend.float32)
             prob = dgl.backend.zerocopy_to_dgl_ndarray(prob)
-            nf1 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf1 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -1066,7 +1066,7 @@ class LoadBalanceGraphDataset_al_each_sum(torch.utils.data.IterableDataset):
             )[0]
             nf1 = NodeFlow(self.graphs[graph_idx], nf1)
             trace1 = [nf1.layer_parent_nid(i) for i in range(nf1.num_layers)]
-            nf2 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf2 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([other_node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -1225,7 +1225,7 @@ class LoadBalanceGraphDataset_al_each_sum_rev(torch.utils.data.IterableDataset):
         if step == 0:
             other_node_idx = node_idx
         else:
-            other_node_idx = dgl.contrib.sampling.random_walk(
+            other_node_idx = dgl.sampling.random_walk(
                 g=self.graphs[graph_idx], seeds=[node_idx], num_traces=1, num_hops=step
             )[0][0][-1].item()
 
@@ -1234,7 +1234,7 @@ class LoadBalanceGraphDataset_al_each_sum_rev(torch.utils.data.IterableDataset):
                 self.rw_hops,
                 int(
                     (
-                            (self.graphs[graph_idx].in_degree(node_idx) ** 0.75)
+                            (self.graphs[graph_idx].in_degrees(node_idx) ** 0.75)
                             * math.e
                             / (math.e - 1)
                             / self.restart_prob
@@ -1242,7 +1242,7 @@ class LoadBalanceGraphDataset_al_each_sum_rev(torch.utils.data.IterableDataset):
                     + 0.5
                 ),
             )
-            traces = dgl.contrib.sampling.random_walk_with_restart(
+            traces = dgl.sampling.random_walk_with_restart(
                 self.graphs[graph_idx],
                 seeds=[node_idx, other_node_idx],
                 restart_prob=self.restart_prob,
@@ -1251,7 +1251,7 @@ class LoadBalanceGraphDataset_al_each_sum_rev(torch.utils.data.IterableDataset):
         elif self.aug == "ns":
             prob = dgl.backend.tensor([], dgl.backend.float32)
             prob = dgl.backend.zerocopy_to_dgl_ndarray(prob)
-            nf1 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf1 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -1265,7 +1265,7 @@ class LoadBalanceGraphDataset_al_each_sum_rev(torch.utils.data.IterableDataset):
             )[0]
             nf1 = NodeFlow(self.graphs[graph_idx], nf1)
             trace1 = [nf1.layer_parent_nid(i) for i in range(nf1.num_layers)]
-            nf2 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf2 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([other_node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -1393,7 +1393,7 @@ class LoadBalanceGraphDataset_var(torch.utils.data.IterableDataset):
         if step == 0:
             other_node_idx = node_idx
         else:
-            other_node_idx = dgl.contrib.sampling.random_walk(
+            other_node_idx = dgl.sampling.random_walk(
                 g=self.graphs[graph_idx], seeds=[node_idx], num_traces=1, num_hops=step
             )[0][0][-1].item()
 
@@ -1402,7 +1402,7 @@ class LoadBalanceGraphDataset_var(torch.utils.data.IterableDataset):
                 self.rw_hops,
                 int(
                     (
-                            (self.graphs[graph_idx].in_degree(node_idx) ** 0.75)
+                            (self.graphs[graph_idx].in_degrees(node_idx) ** 0.75)
                             * math.e
                             / (math.e - 1)
                             / self.restart_prob
@@ -1410,7 +1410,7 @@ class LoadBalanceGraphDataset_var(torch.utils.data.IterableDataset):
                     + 0.5
                 ),
             )
-            traces = dgl.contrib.sampling.random_walk_with_restart(
+            traces = dgl.sampling.random_walk_with_restart(
                 self.graphs[graph_idx],
                 seeds=[node_idx, other_node_idx],
                 restart_prob=self.restart_prob,
@@ -1419,7 +1419,7 @@ class LoadBalanceGraphDataset_var(torch.utils.data.IterableDataset):
         elif self.aug == "ns":
             prob = dgl.backend.tensor([], dgl.backend.float32)
             prob = dgl.backend.zerocopy_to_dgl_ndarray(prob)
-            nf1 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf1 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -1433,7 +1433,7 @@ class LoadBalanceGraphDataset_var(torch.utils.data.IterableDataset):
             )[0]
             nf1 = NodeFlow(self.graphs[graph_idx], nf1)
             trace1 = [nf1.layer_parent_nid(i) for i in range(nf1.num_layers)]
-            nf2 = dgl.contrib.sampling.sampler._CAPI_NeighborSampling(
+            nf2 = dgl.sampling.sampler._CAPI_NeighborSampling(
                 self.graphs[graph_idx]._graph,
                 dgl.utils.toindex([other_node_idx]).todgltensor(),
                 0,  # batch_start_id
@@ -1523,7 +1523,7 @@ class GraphDataset(torch.utils.data.Dataset):
         if step == 0:
             other_node_idx = node_idx
         else:
-            other_node_idx = dgl.contrib.sampling.random_walk(
+            other_node_idx = dgl.sampling.random_walk(
                 g=self.graphs[graph_idx], seeds=[node_idx], num_traces=1, num_hops=step
             )[0][0][-1].item()
 
@@ -1539,7 +1539,7 @@ class GraphDataset(torch.utils.data.Dataset):
                 + 0.5
             ),
         )
-        traces = dgl.contrib.sampling.random_walk_with_restart(
+        traces = dgl.sampling.random_walk_with_restart(
             self.graphs[graph_idx],
             seeds=[node_idx, other_node_idx],
             restart_prob=self.restart_prob,
@@ -1593,7 +1593,7 @@ class NodeClassificationDataset(GraphDataset):
         graph.add_nodes(num_nodes)
         graph.add_edges(src, dst)
         graph.add_edges(dst, src)
-        graph.readonly()
+        # graph.readonly()
         return graph
 
 
@@ -1656,7 +1656,7 @@ class GraphClassificationDatasetLabeled(GraphClassificationDataset):
         graph_idx = idx
         node_idx = self.graphs[idx].out_degrees().argmax().item()
 
-        traces = dgl.contrib.sampling.random_walk_with_restart(
+        traces = dgl.sampling.random_walk_with_restart(
             self.graphs[graph_idx],
             seeds=[node_idx],
             restart_prob=self.restart_prob,
@@ -1705,7 +1705,7 @@ class NodeClassificationDatasetLabeled(NodeClassificationDataset):
             else:
                 node_idx -= self.graphs[i].number_of_nodes()
 
-        traces = dgl.contrib.sampling.random_walk_with_restart(
+        traces = dgl.sampling.random_walk_with_restart(
             self.graphs[graph_idx],
             seeds=[node_idx],
             restart_prob=self.restart_prob,

@@ -1,5 +1,5 @@
 from .dataset import PlanetoidData, get_cora, TransformAdj, GeomGCNData
-from . import signac_tools
+# from . import signac_tools
 from . import dataset
 from . import sparsegraph
 import os

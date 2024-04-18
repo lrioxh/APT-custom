@@ -150,7 +150,7 @@ class NewDataEdgelist(object):
         features = dataset._sparse_data["features"]
         labels = dataset._dense_data["y_all"]
 
-        G = nx.from_scipy_sparse_matrix(adj)
+        G = nx.from_scipy_sparse_array(adj)
         adj_lists = nx.to_dict_of_lists(G)
         pyg_G = from_networkx(G)
         edge_index = torch.tensor(pyg_G.edge_index, dtype=torch.long)
@@ -267,7 +267,7 @@ class NewPKLDataEdgelist(object):
         self.name = name
         adj = pickle.load(open(f'graphs/{name}_adj.pkl', 'rb'))
         label = torch.LongTensor(pickle.load(open(f'graphs/{name}_labels.pkl', 'rb')))
-        G = nx.from_scipy_sparse_matrix(adj)
+        G = nx.from_scipy_sparse_array(adj)
         adj_lists = nx.to_dict_of_lists(G)
         pyg_G = from_networkx(G)
         edge_index = torch.tensor(pyg_G.edge_index, dtype=torch.long)

@@ -174,7 +174,7 @@ class PlanetoidData:
         """Create mask."""
         mask = np.zeros(l)
         mask[idx] = 1
-        return np.array(mask, dtype=np.bool)
+        return np.array(mask, dtype=bool)
 
     @staticmethod
     def _pkl_load(f):
